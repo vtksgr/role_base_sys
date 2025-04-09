@@ -9,10 +9,10 @@ const register = async (req, res) => {
 
         //hashing password
         const salt = bcrypt.genSaltSync(10);
-        const hash = await bcrypt.hashSync(password, salt);
+        const hashPassword = await bcrypt.hash(password, salt);
 
         //create new user
-        const newuser = new User({ username, password: bcrypt.hash, role });
+        const newuser = new User({ username, password: hashPassword, role });
 
         await newuser.save();
 
@@ -25,8 +25,8 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
         const { username, password } = req.body;
-        //yesma findOne use gareko xai user name xai unique value vayera
-        const user = User.findOne({ username });
+        //yesma findOne use gareko xai user name xai unique value vayera ho
+        const user = await User.findOne({ username });
         //if user not found
         if (!user) {
             return res.status(404).json({ message: "User not found" });
